@@ -7,18 +7,23 @@ const App: React.FC = () => {
     { label: 'About', value: '/about' },
     { label: 'Services', value: '/services' },
     { label: 'Contact', value: '/contact' },
+    { label: 'Blog', value: '/blog' },
+    { label: 'Careers', value: '/careers' },
   ];
 
   const handleSelect = (value: string) => {
-    // Here you can implement your own routing logic
-    // For example, using window.location or a custom routing solution
-    window.location.href = value;
+    console.log('Selected:', value);
+    // Handle navigation or other actions here
   };
 
   return (
     <div className="App">
-      <SausageDropdown items={menuItems} onSelect={handleSelect} />
-      {/* Rest of your app */}
+      <SausageDropdown 
+        items={menuItems} 
+        onSelect={handleSelect} 
+        width={800} 
+        height={600}
+      />
     </div>
   );
 };

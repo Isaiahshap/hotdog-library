@@ -20,6 +20,9 @@ importers:
       '@react-three/fiber':
         specifier: ^8.16.8
         version: 8.16.8(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(three@0.166.1)
+      '@tweenjs/tween.js':
+        specifier: ^23.1.2
+        version: 23.1.2
       '@types/three':
         specifier: ^0.166.0
         version: 0.166.0
@@ -39,6 +42,9 @@ importers:
       '@types/react-dom':
         specifier: ^18.3.0
         version: 18.3.0
+      '@types/tween.js':
+        specifier: ^18.6.1
+        version: 18.6.1
       '@vitejs/plugin-react':
         specifier: ^4.3.1
         version: 4.3.1(vite@5.3.3)
@@ -536,6 +542,10 @@ packages:
 
   '@types/three@0.166.0':
     resolution: {integrity: sha512-FHMnpcdhdbdOOIYbfkTkUVpYMW53odxbTRwd0/xJpYnTzEsjnVnondGAvHZb4z06UW0vo6WPVuvH0/9qrxKx7g==}
+
+  '@types/tween.js@18.6.1':
+    resolution: {integrity: sha512-TJsLKUQtHPMvxEzh9Iy1Rb8C+a1q8IRrZsYy21LX4l9mhVtvfkPzQ7p7SA25N2YvCm0dEZ0V0y/5cPOnGI/atw==}
+    deprecated: This is a stub types definition. @tweenjs/tween.js provides its own type definitions, so you do not need this installed.
 
   '@types/webxr@0.5.19':
     resolution: {integrity: sha512-4hxA+NwohSgImdTSlPXEqDqqFktNgmTXQ05ff1uWam05tNGroCMp4G+4XVl6qWm1p7GQ/9oD41kAYsSssF6Mzw==}
@@ -1442,6 +1452,10 @@ snapshots:
       '@types/webxr': 0.5.19
       fflate: 0.8.2
       meshoptimizer: 0.18.1
+
+  '@types/tween.js@18.6.1':
+    dependencies:
+      '@tweenjs/tween.js': 23.1.2
 
   '@types/webxr@0.5.19': {}
 
