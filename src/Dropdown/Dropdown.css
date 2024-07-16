@@ -1,0 +1,28 @@
+/* SausageDropdown.css */
+
+.sausage-dropdown {
+    position: relative;
+    cursor: pointer;
+  }
+  
+  .sausage-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .sausage-menu li {
+    padding: 8px 12px;
+    cursor: pointer;
+  }
+  
+  .sausage-menu li.hovered {
+    background-color: #f0f0f0;
+  }
