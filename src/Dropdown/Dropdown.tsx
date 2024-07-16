@@ -16,6 +16,11 @@ interface SausageDropdownProps {
   height?: number;
 }
 
+interface SausageItem extends THREE.Group {
+  sausageMesh: THREE.Mesh;
+  textMesh: THREE.Mesh;
+}
+
 const SausageDropdown: React.FC<SausageDropdownProps> = ({
   items,
   onSelect,
@@ -32,35 +37,45 @@ const SausageDropdown: React.FC<SausageDropdownProps> = ({
   const sausageColor = 0xc14f0e;
   const sausageRadius = 0.4;
   const sausageLength = 6;
-  const sausageSpacing = 1.2;
+  const sausageSpacing = 1.5;
 
-  const createSausage = useCallback((y: number) => {
-    const sausageGeometry = new THREE.CapsuleGeometry(sausageRadius, sausageLength, 16, 16);
-    const sausageMaterial = new THREE.MeshStandardMaterial({
-      color: sausageColor,
-      roughness: 0.7,
-      metalness: 0.1,
-    });
-    const sausage = new THREE.Mesh(sausageGeometry, sausageMaterial);
-    sausage.rotation.z = Math.PI / 2;
-    sausage.position.y = y;
-    return sausage;
-  }, []);
+  const createSausageItem = useCallback((text: string, y: number): Promise<SausageItem> => {
+    return new Promise((resolve) => {
+      const sausageGeometry = new THREE.CapsuleGeometry(sausageRadius, sausageLength, 32, 16);
+      const sausageMaterial = new THREE.MeshPhongMaterial({
+        color: sausageColor,
+        specular: 0x111111,
+        shininess: 30,
+      });
+      const sausageMesh = new THREE.Mesh(sausageGeometry, sausageMaterial);
+      sausageMesh.rotation.z = Math.PI / 2;
 
-  const createText = useCallback((text: string, y: number) => {
-    return new Promise<THREE.Mesh>((resolve) => {
       const loader = new FontLoader();
-      loader.load('https://threejs.org/examples/fonts/helvetiker_regular.typeface.json', (font) => {
+      loader.load('https://threejs.org/examples/fonts/helvetiker_bold.typeface.json', (font) => {
         const textGeometry = new TextGeometry(text, {
           font: font,
-          size: 0.4,
+          size: 0.3,
           height: 0.05,
+          curveSegments: 12,
+          bevelEnabled: false,
         });
+        textGeometry.computeBoundingBox();
         textGeometry.center();
-        const textMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
+        
+        const textMaterial = new THREE.MeshPhongMaterial({ color: 0xffffff });
         const textMesh = new THREE.Mesh(textGeometry, textMaterial);
-        textMesh.position.set(0, y, sausageRadius + 0.1);
-        resolve(textMesh);
+        textMesh.position.set(0, 0, sausageRadius + 0.05);
+        // Make text horizontal
+        textMesh.rotation.x = Math.PI / 10;
+
+        const sausageItem = new THREE.Group() as SausageItem;
+        sausageItem.add(sausageMesh);
+        sausageItem.add(textMesh);
+        sausageItem.sausageMesh = sausageMesh;
+        sausageItem.textMesh = textMesh;
+        sausageItem.position.y = y;
+
+        resolve(sausageItem);
       });
     });
   }, []);
@@ -86,26 +101,17 @@ const SausageDropdown: React.FC<SausageDropdownProps> = ({
     const sausageGroup = new THREE.Group();
     scene.add(sausageGroup);
 
-    // Create main sausage and text
-    const mainSausage = createSausage(0);
-    sausageGroup.add(mainSausage);
-    createText("Menu", 0).then((textMesh) => {
-      sausageGroup.add(textMesh);
+    // Create main sausage
+    createSausageItem("Menu", 0).then((mainSausageItem) => {
+      sausageGroup.add(mainSausageItem);
     });
 
-    // Create dropdown sausages and text
+    // Create dropdown sausages
     items.forEach((item, index) => {
       const y = -(index + 1) * sausageSpacing;
-      
-      // Create sausage
-      const dropdownSausage = createSausage(y);
-      dropdownSausage.visible = false;
-      sausageGroup.add(dropdownSausage);
-
-      // Create text on the sausage
-      createText(item.label, y).then((textMesh) => {
-        textMesh.visible = false;
-        sausageGroup.add(textMesh);
+      createSausageItem(item.label, y).then((sausageItem) => {
+        sausageItem.visible = false;
+        sausageGroup.add(sausageItem);
       });
     });
 
@@ -139,7 +145,7 @@ const SausageDropdown: React.FC<SausageDropdownProps> = ({
       mountRef.current?.removeChild(renderer.domElement);
       window.removeEventListener('mousemove', handleMouseMove);
     };
-  }, [width, height, items, createSausage, createText]);
+  }, [width, height, items, createSausageItem]);
 
   const animateDropdown = useCallback((open: boolean) => {
     if (!sausageGroupRef.current) return;
@@ -147,15 +153,23 @@ const SausageDropdown: React.FC<SausageDropdownProps> = ({
     const duration = 500;
     const startTime = Date.now();
 
+    const easeInOutCubic = (t: number) => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+
     const animate = () => {
       const elapsedTime = Date.now() - startTime;
       const progress = Math.min(elapsedTime / duration, 1);
+      const easedProgress = easeInOutCubic(progress);
 
       sausageGroupRef.current?.children.forEach((child, index) => {
-        if (index > 1) { // Skip main sausage and its text
-          const targetY = open ? -Math.floor((index - 1) / 2) * sausageSpacing : 0;
-          child.position.y = THREE.MathUtils.lerp(child.position.y, targetY, progress);
-          child.visible = open;
+        if (index > 0) { // Skip main sausage
+          const targetY = open ? -(index) * sausageSpacing : 0;
+          const currentY = open ? 0 : -(index) * sausageSpacing;
+          child.position.y = THREE.MathUtils.lerp(currentY, targetY, easedProgress);
+          child.visible = open || progress < 1;
+          
+          if (child instanceof THREE.Group) {
+            child.scale.set(1, easedProgress, 1);
+          }
         }
       });
 
@@ -178,16 +192,19 @@ const SausageDropdown: React.FC<SausageDropdownProps> = ({
   const handleHover = useCallback((index: number, isHovering: boolean) => {
     if (!sausageGroupRef.current) return;
 
-    const sausage = sausageGroupRef.current.children[index * 2 + 1];
-    if (sausage instanceof THREE.Mesh) {
-      (sausage.material as THREE.MeshStandardMaterial).color.setHex(isHovering ? 0xff9933 : sausageColor);
+    const sausageItem = sausageGroupRef.current.children[index + 1] as SausageItem;
+    if (sausageItem && sausageItem.sausageMesh) {
+      (sausageItem.sausageMesh.material as THREE.MeshPhongMaterial).color.setHex(isHovering ? 0xff9933 : sausageColor);
     }
   }, []);
 
   const handleSelect = useCallback((index: number) => {
-    onSelect(items[index].value);
-    setIsOpen(false);
-    animateDropdown(false);
+    const selectedItem = items[index];
+    if (selectedItem) {
+      onSelect(selectedItem.value);
+      setIsOpen(false);
+      animateDropdown(false);
+    }
   }, [items, onSelect, animateDropdown]);
 
   return (

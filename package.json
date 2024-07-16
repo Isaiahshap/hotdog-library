@@ -29,6 +29,7 @@
     "@react-three/drei": "^9.108.4",
     "@react-three/fiber": "^8.16.8",
     "@types/three": "^0.166.0",
+    "react-router-dom": "^6.25.0",
     "three": "^0.166.1",
     "three-csg-ts": "^3.2.0"
   }
