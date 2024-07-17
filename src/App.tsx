@@ -1,29 +1,16 @@
+// App.tsx
 import React from 'react';
 import SausageDropdown from './Dropdown/Dropdown';
+import Background from './Background/Background';
 
 const App: React.FC = () => {
-  const menuItems = [
-    { label: 'Home', value: '/' },
-    { label: 'About', value: '/about' },
-    { label: 'Services', value: '/services' },
-    { label: 'Contact', value: '/contact' },
-    { label: 'Blog', value: '/blog' },
-    { label: 'Careers', value: '/careers' },
-  ];
-
-  const handleSelect = (value: string) => {
-    console.log('Selected:', value);
-    // Handle navigation or other actions here
-  };
+  // ... (rest of your App component code)
 
   return (
-    <div className="App">
-      <SausageDropdown 
-        items={menuItems} 
-        onSelect={handleSelect} 
-        width={800} 
-        height={600}
-      />
+    <div className="App" style={{ position: 'relative' }}>
+      <Background />
+      <div style={{ position: 'absolute', top: 0, left: 0, zIndex: 1 }}>
+      </div>
     </div>
   );
 };

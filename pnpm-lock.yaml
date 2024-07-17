@@ -35,6 +35,9 @@ importers:
       three-csg-ts:
         specifier: ^3.2.0
         version: 3.2.0(@types/three@0.166.0)(three@0.166.1)
+      tween.module.min:
+        specifier: link:three/examples/jsm/libs/tween.module.min
+        version: link:three/examples/jsm/libs/tween.module.min
     devDependencies:
       '@types/react':
         specifier: ^18.3.3

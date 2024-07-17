@@ -33,6 +33,7 @@
     "@types/three": "^0.166.0",
     "react-router-dom": "^6.25.0",
     "three": "^0.166.1",
-    "three-csg-ts": "^3.2.0"
+    "three-csg-ts": "^3.2.0",
+    "tween.module.min": "link:three/examples/jsm/libs/tween.module.min"
   }
 }
