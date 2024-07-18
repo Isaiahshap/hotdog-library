@@ -2,7 +2,12 @@
 import React, { useRef, useEffect } from 'react';
 import * as THREE from 'three';
 
-const Background: React.FC = () => {
+interface BackgroundProps {
+  coalCount: number;
+  glowIntensity: number;
+}
+
+const Background: React.FC<BackgroundProps> = ({ coalCount, glowIntensity }) => {
   const mountRef = useRef<HTMLDivElement>(null);
   const sausageRef = useRef<THREE.Mesh | null>(null);
 
@@ -29,14 +34,13 @@ const Background: React.FC = () => {
 
     // Charcoal
     const charcoalGroup = new THREE.Group();
-    const charcoalCount = 2000;
     const charcoalGeometry = new THREE.DodecahedronGeometry(0.05);
     
-    for (let i = 0; i < charcoalCount; i++) {
+    for (let i = 0; i < coalCount; i++) {
       const charcoalMaterial = new THREE.MeshStandardMaterial({
         color: new THREE.Color(0x222222).lerp(new THREE.Color(0x444444), Math.random()),
         emissive: new THREE.Color(0xff4400).lerp(new THREE.Color(0xff8800), Math.random()),
-        emissiveIntensity: Math.random() * 0.5,
+        emissiveIntensity: Math.random() * glowIntensity,
         roughness: 0.9,
       });
       const charcoal = new THREE.Mesh(charcoalGeometry, charcoalMaterial);
@@ -82,8 +86,8 @@ const Background: React.FC = () => {
       clearcoatRoughness: 0.3,
     });
     const sausage = new THREE.Mesh(sausageGeometry, sausageMaterial);
-    sausage.rotation.z = Math.PI / 2;  // Lay the sausage flat
-    sausage.position.set(0, 0.25, 0);  // Position it just above the grates
+    sausage.rotation.z = Math.PI / 2;
+    sausage.position.set(0, 0.25, 0);
     scene.add(sausage);
     sausageRef.current = sausage;
 
@@ -115,7 +119,7 @@ const Background: React.FC = () => {
       // Animate charcoal glow
       charcoalGroup.children.forEach((child) => {
         if (child instanceof THREE.Mesh && child.material instanceof THREE.MeshStandardMaterial) {
-          child.material.emissiveIntensity = Math.max(0, Math.min(0.5, child.material.emissiveIntensity + (Math.random() - 0.5) * 0.05));
+          child.material.emissiveIntensity = Math.max(0, Math.min(glowIntensity, child.material.emissiveIntensity + (Math.random() - 0.5) * 0.05));
         }
       });
 
@@ -163,16 +167,13 @@ const Background: React.FC = () => {
         const targetPosition = intersects[0].point;
         const sausage = sausageRef.current;
 
-        // Clamp the target position to the grill boundaries
         targetPosition.x = Math.max(-1.9, Math.min(1.9, targetPosition.x));
         targetPosition.z = Math.max(-1.9, Math.min(1.9, targetPosition.z));
 
-        // Move sausage towards mouse position, keeping it above the grates
         sausage.position.x += (targetPosition.x - sausage.position.x) * 0.1;
         sausage.position.z += (targetPosition.z - sausage.position.z) * 0.1;
-        sausage.position.y = 0.25;  // Keep it at a constant height above the grates
+        sausage.position.y = 0.25;
 
-        // Rotate the sausage to face the direction of movement
         const angle = Math.atan2(targetPosition.x - sausage.position.x, targetPosition.z - sausage.position.z);
         sausage.rotation.y = angle;
       }
@@ -187,7 +188,7 @@ const Background: React.FC = () => {
         mountRef.current.removeChild(renderer.domElement);
       }
     };
-  }, []);
+  }, [coalCount, glowIntensity]);
 
   return <div ref={mountRef} style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%' }} />;
 };

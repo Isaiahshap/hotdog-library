@@ -3,7 +3,7 @@ import * as THREE from 'three';
 import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry';
 import { FontLoader } from 'three/examples/jsm/loaders/FontLoader';
 import * as TWEEN from '@tweenjs/tween.js';
-import './Button.css';
+import './Navbar.css';
 
 interface SausageButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   width?: number;
