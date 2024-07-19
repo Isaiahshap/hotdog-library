@@ -39,7 +39,6 @@ p {
   font-size: 2rem;
 }
 
-/* Ensure Background component stays behind everything but captures mouse events */
 .background {
   position: fixed;
   top: 0;
@@ -49,7 +48,6 @@ p {
   z-index: 0;
 }
 
-/* Navbar styles */
 .sausage-navbar {
   position: fixed;
   top: 0;
