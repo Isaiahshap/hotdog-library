@@ -190,7 +190,7 @@ const Background: React.FC<BackgroundProps> = ({ coalCount, glowIntensity }) => 
     };
   }, [coalCount, glowIntensity]);
 
-  return <div ref={mountRef} style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%' }} />;
+  return <div ref={mountRef} style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', zIndex: -1 }} />;
 };
 
 export default Background;

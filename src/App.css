@@ -1,31 +1,59 @@
 /* App.css */
 .App {
-  text-align: center;
-  padding: 20px;
-  background-color: #f0f0f0;
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+.content {
+  position: relative;
+  z-index: 1;
+  padding-top: 120px;
+  max-width: 1600px;
+  margin: 0 auto;
+  pointer-events: none;
+}
+
+.content > * {
+  pointer-events: auto;
+}
+
+.button-dropdown-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 60px;
+  margin-bottom: 80px;
 }
 
 h1 {
+  color: #FFD700;
+  text-align: center;
+  font-size: 4rem;
   margin-bottom: 30px;
 }
 
-.component-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 20px;
-  justify-content: center;
+p {
+  color: #FFA500;
+  text-align: center;
+  font-size: 2rem;
 }
 
-.component-item {
-  background-color: white;
-  border-radius: 8px;
-  padding: 20px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+/* Ensure Background component stays behind everything but captures mouse events */
+.background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
 }
 
-.background-container {
-  width: 300px;
-  height: 200px;
-  margin: 0 auto;
-  overflow: hidden;
+/* Navbar styles */
+.sausage-navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
 }

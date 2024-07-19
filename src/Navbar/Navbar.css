@@ -1,66 +1,17 @@
 /* Navbar.css */
-
 .sausage-navbar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 1000;
-    background-color: rgba(255, 255, 255, 0.9); /* Semi-transparent white background */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
-  }
-  
-  .sausage-navbar:hover {
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-  }
-  
-  /* Ensure the canvas inside the navbar fits properly */
-  .sausage-navbar canvas {
-    display: block;
-    width: 100%;
-    height: 100%;
-  }
-  
-  /* Style for the clickable area */
-  .sausage-navbar-clickable {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    cursor: pointer;
-  }
-  
-  /* Responsive adjustments */
-  @media (max-width: 768px) {
-    .sausage-navbar {
-      height: 80px; /* Slightly smaller on mobile devices */
-    }
-  }
-  
-  /* Optional: Add a subtle animation when the page loads */
-  @keyframes navbar-appear {
-    from {
-      opacity: 0;
-      transform: translateY(-20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-  
-  .sausage-navbar {
-    animation: navbar-appear 0.5s ease-out;
-  }
-  
-  /* Optional: Style for when the dropdown is open */
-  .sausage-navbar.dropdown-open {
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-  }
-  
-  /* Optional: Add some padding to the body to account for the fixed navbar */
-  body {
-    padding-top: 100px; /* Adjust this value based on your navbar height */
-  }
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 80px;
+  z-index: 1000;
+}
+
+.sausage-3d-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 80px;
+}

@@ -1,51 +1,45 @@
 // App.tsx
-import React, { useState } from 'react';
-import Background from './Background/Background';
-import SausageDropdown from './Dropdown/Dropdown';
-import SausageButton from './Button/Button';
+import React from 'react';
 import Navbar from './Navbar/Navbar';
+import Background from './Background/Background';
+import SausageButton from './Button/Button';
+import SausageDropdown from './Dropdown/Dropdown';
 import './App.css';
 
 const App: React.FC = () => {
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-
   const dropdownItems = [
-    { label: 'Home', value: 'home' },
-    { label: 'About', value: 'about' },
-    { label: 'Products', value: 'products' },
-    { label: 'Contact', value: 'contact' },
+    { label: 'Bratwurst', value: 'bratwurst' },
+    { label: 'Italian Sausage', value: 'italian' },
+    { label: 'Chorizo', value: 'chorizo' },
+    { label: 'Andouille', value: 'andouille' },
   ];
 
   const handleDropdownSelect = (value: string) => {
-    console.log(`Selected: ${value}`);
-    setIsDropdownOpen(false);
+    console.log('Selected:', value);
   };
 
   return (
-    <div className="App" style={{ position: 'relative' }}>
-      <Background coalCount={2000} glowIntensity={1.5} />
-      <Navbar>
-        <SausageButton 
-          width={200} 
-          height={100} 
-          condiment="ketchup"
-          onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-        >
-          Menu
-        </SausageButton>
-      </Navbar>
-      {isDropdownOpen && (
-        <div style={{ position: 'absolute', top: '100px', left: '20px', zIndex: 1000 }}>
+    <div className="App">
+      <Background coalCount={2000} glowIntensity={0.5} />
+      <div className="content">
+        <Navbar 
+          title="Sausage Heaven" 
+          textColor="#FFD700"
+          fontUrl="https://threejs.org/examples/fonts/gentilis_bold.typeface.json"
+        />
+        <div className="button-dropdown-container">
+          <SausageButton width={600} height={300} condiment="ketchup">
+            Order Now
+          </SausageButton>
           <SausageDropdown
             items={dropdownItems}
             onSelect={handleDropdownSelect}
-            width={300}
-            height={400}
+            width={600}
+            height={300}
           />
         </div>
-      )}
-      <div style={{ position: 'absolute', top: 0, left: 0, zIndex: 1 }}>
-        {/* Your existing content */}
+        <h1>Welcome to Sausage Heaven</h1>
+        <p>Explore our delicious sausage menu!</p>
       </div>
     </div>
   );
