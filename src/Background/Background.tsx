@@ -179,18 +179,18 @@ const Background: React.FC<BackgroundProps> = ({ coalCount, glowIntensity }) => 
       }
     };
 
-    mountRef.current.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mousemove', handleMouseMove);
 
     return () => {
       window.removeEventListener('resize', handleResize);
-      mountRef.current?.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mousemove', handleMouseMove);
       if (mountRef.current) {
         mountRef.current.removeChild(renderer.domElement);
       }
     };
   }, [coalCount, glowIntensity]);
 
-  return <div ref={mountRef} style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', zIndex: -1 }} />;
+  return <div ref={mountRef} style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', zIndex: -1, pointerEvents: 'none' }} />;
 };
 
 export default Background;

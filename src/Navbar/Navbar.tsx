@@ -1,5 +1,5 @@
 // Navbar.tsx
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, ReactNode } from 'react';
 import * as THREE from 'three';
 import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry';
 import { FontLoader } from 'three/examples/jsm/loaders/FontLoader';
@@ -9,12 +9,14 @@ interface NavbarProps {
   title: string;
   textColor?: string;
   fontUrl?: string;
+  children?: ReactNode;
 }
 
 const Navbar: React.FC<NavbarProps> = ({ 
   title, 
   textColor = '#ffffff', 
-  fontUrl = 'https://threejs.org/examples/fonts/helvetiker_bold.typeface.json' 
+  fontUrl = 'https://threejs.org/examples/fonts/helvetiker_bold.typeface.json',
+  children
 }) => {
   const mountRef = useRef<HTMLDivElement>(null);
 
@@ -100,6 +102,9 @@ const Navbar: React.FC<NavbarProps> = ({
   return (
     <nav className="sausage-navbar">
       <div ref={mountRef} className="sausage-3d-container"></div>
+      <div className="navbar-content">
+        {children}
+      </div>
     </nav>
   );
 };

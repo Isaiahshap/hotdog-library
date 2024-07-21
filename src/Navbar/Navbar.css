@@ -6,6 +6,8 @@
   right: 0;
   height: 80px;
   z-index: 1000;
+  display: flex;
+  align-items: center;
 }
 
 .sausage-3d-container {
@@ -14,4 +16,12 @@
   left: 0;
   right: 0;
   height: 80px;
+}
+
+.navbar-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  padding-left: 20px;
 }

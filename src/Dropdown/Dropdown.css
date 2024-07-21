@@ -3,6 +3,8 @@
 .sausage-dropdown {
     position: relative;
     cursor: pointer;
+    padding-left: 1200px;
+    
   }
   
   .sausage-menu {

@@ -18,19 +18,29 @@ const App: React.FC = () => {
     console.log('Selected:', value);
   };
 
+  const handleOrderClick = () => {
+    console.log('Order button clicked');
+  };
+
   return (
     <div className="App">
       <Background coalCount={2000} glowIntensity={0.5} />
+      <Navbar 
+        title="Sausage Heaven" 
+        textColor="#FFD700"
+        fontUrl="https://threejs.org/examples/fonts/gentilis_bold.typeface.json"
+      >
+        <SausageButton 
+          width={400} 
+          height={120} 
+          condiment="ketchup" 
+          onClick={handleOrderClick}
+        >
+          Order Now
+        </SausageButton>
+      </Navbar>
       <div className="content">
-        <Navbar 
-          title="Sausage Heaven" 
-          textColor="#FFD700"
-          fontUrl="https://threejs.org/examples/fonts/gentilis_bold.typeface.json"
-        />
-        <div className="button-dropdown-container">
-          <SausageButton width={600} height={300} condiment="ketchup">
-            Order Now
-          </SausageButton>
+        <div className="dropdown-container">
           <SausageDropdown
             items={dropdownItems}
             onSelect={handleDropdownSelect}
@@ -38,8 +48,6 @@ const App: React.FC = () => {
             height={300}
           />
         </div>
-        <h1>Welcome to Sausage Heaven</h1>
-        <p>Explore our delicious sausage menu!</p>
       </div>
     </div>
   );

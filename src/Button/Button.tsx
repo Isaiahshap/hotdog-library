@@ -1,3 +1,4 @@
+// Button.tsx
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import * as THREE from 'three';
 import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry';
@@ -13,8 +14,8 @@ interface SausageButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
 }
 
 const SausageButton: React.FC<SausageButtonProps> = ({ 
-  width = 600, 
-  height = 400, 
+  width = 400, 
+  height =120, 
   condiment = 'ketchup', 
   children,
   ...props 
@@ -28,8 +29,8 @@ const SausageButton: React.FC<SausageButtonProps> = ({
   const createSausageButton = useCallback((text: string): Promise<THREE.Group> => {
     return new Promise((resolve) => {
       const sausageGroup = new THREE.Group();
-      const sausageRadius = 0.5;
-      const sausageLength = 3;
+      const sausageRadius = 0.2;
+      const sausageLength = 1.5;
       const bodyGeometry = new THREE.CapsuleGeometry(sausageRadius, sausageLength, 32, 32);
       const bodyMaterial = new THREE.MeshPhysicalMaterial({
         color: 0xc14f0e,
@@ -46,12 +47,12 @@ const SausageButton: React.FC<SausageButtonProps> = ({
       loader.load('https://threejs.org/examples/fonts/helvetiker_bold.typeface.json', (font) => {
         const textGeometry = new TextGeometry(text, {
           font: font,
-          size: 0.35,
-          height: 0.08,
+          size: 0.15,
+          height: 0.04,
           curveSegments: 12,
           bevelEnabled: true,
-          bevelThickness: 0.02,
-          bevelSize: 0.01,
+          bevelThickness: 0.01,
+          bevelSize: 0.005,
           bevelOffset: 0,
           bevelSegments: 5
         });
@@ -90,7 +91,7 @@ const SausageButton: React.FC<SausageButtonProps> = ({
     directionalLight.position.set(5, 5, 5);
     scene.add(directionalLight);
 
-    camera.position.z = 5;
+    camera.position.z = 2;
 
     createSausageButton(children?.toString() || '').then((sausageGroup) => {
       scene.add(sausageGroup);
@@ -108,21 +109,32 @@ const SausageButton: React.FC<SausageButtonProps> = ({
     cameraRef.current = camera;
     rendererRef.current = renderer;
 
-    const handleMouseMove = (event: MouseEvent) => {
-      if (!sausageGroupRef.current) return;
-
-      const rect = mountRef.current!.getBoundingClientRect();
-      const mouseX = ((event.clientX - rect.left) / width) * 2 - 1;
-
-      sausageGroupRef.current.rotation.y = mouseX * 0.3;
+    const handleMouseEnter = () => {
+      if (sausageGroupRef.current) {
+        new TWEEN.Tween(sausageGroupRef.current.scale)
+          .to({ x: 1.1, y: 1.1, z: 1.1 }, 200)
+          .easing(TWEEN.Easing.Quadratic.Out)
+          .start();
+      }
     };
 
-    mountRef.current.addEventListener('mousemove', handleMouseMove);
+    const handleMouseLeave = () => {
+      if (sausageGroupRef.current) {
+        new TWEEN.Tween(sausageGroupRef.current.scale)
+          .to({ x: 1, y: 1, z: 1 }, 200)
+          .easing(TWEEN.Easing.Quadratic.Out)
+          .start();
+      }
+    };
+
+    mountRef.current.addEventListener('mouseenter', handleMouseEnter);
+    mountRef.current.addEventListener('mouseleave', handleMouseLeave);
 
     return () => {
       renderer.dispose();
       mountRef.current?.removeChild(renderer.domElement);
-      mountRef.current?.removeEventListener('mousemove', handleMouseMove);
+      mountRef.current?.removeEventListener('mouseenter', handleMouseEnter);
+      mountRef.current?.removeEventListener('mouseleave', handleMouseLeave);
     };
   }, [width, height, children, createSausageButton]);
 
