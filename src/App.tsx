@@ -38,16 +38,15 @@ const App: React.FC = () => {
         >
           Order Now
         </SausageButton>
+        <SausageDropdown
+          items={dropdownItems}
+          onSelect={handleDropdownSelect}
+          width={400}
+          height={120}
+        />
       </Navbar>
       <div className="content">
-        <div className="dropdown-container">
-          <SausageDropdown
-            items={dropdownItems}
-            onSelect={handleDropdownSelect}
-            width={600}
-            height={300}
-          />
-        </div>
+        {/* Your main content here */}
       </div>
     </div>
   );

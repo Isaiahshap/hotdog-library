@@ -102,7 +102,7 @@ const Navbar: React.FC<NavbarProps> = ({
   return (
     <nav className="sausage-navbar">
       <div ref={mountRef} className="sausage-3d-container"></div>
-      <div className="navbar-content">
+      <div className="navbar-content" onClick={(e) => e.stopPropagation()}>
         {children}
       </div>
     </nav>

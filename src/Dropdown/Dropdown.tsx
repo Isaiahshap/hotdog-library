@@ -25,20 +25,22 @@ interface SausageItem extends THREE.Group {
 const SausageDropdown: React.FC<SausageDropdownProps> = ({
   items,
   onSelect,
-  width = 800,
-  height = 400
+  width = 400,
+  height = 120
 }) => {
   const mountRef = useRef<HTMLDivElement>(null);
   const [isOpen, setIsOpen] = useState(false);
+  const [isMouseOver, setIsMouseOver] = useState(false);
+  const [isInitialized, setIsInitialized] = useState(false);
   const sceneRef = useRef<THREE.Scene | null>(null);
   const cameraRef = useRef<THREE.OrthographicCamera | null>(null);
   const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
   const sausageGroupRef = useRef<THREE.Group | null>(null);
 
   const sausageColor = 0xc14f0e;
-  const sausageRadius = 0.4;
-  const sausageLength = 6;
-  const sausageSpacing = 1.5;
+  const sausageRadius = 0.2;
+  const sausageLength = 1.5;
+  const sausageSpacing = 0.5;
 
   const createSausageItem = useCallback((text: string, y: number): Promise<SausageItem> => {
     return new Promise((resolve) => {
@@ -57,12 +59,12 @@ const SausageDropdown: React.FC<SausageDropdownProps> = ({
       loader.load('https://threejs.org/examples/fonts/helvetiker_bold.typeface.json', (font) => {
         const textGeometry = new TextGeometry(text, {
           font: font,
-          size: 0.35,
-          height: 0.08,
+          size: 0.15,
+          height: 0.04,
           curveSegments: 12,
           bevelEnabled: true,
-          bevelThickness: 0.02,
-          bevelSize: 0.01,
+          bevelThickness: 0.01,
+          bevelSize: 0.005,
           bevelOffset: 0,
           bevelSegments: 5
         });
@@ -91,7 +93,7 @@ const SausageDropdown: React.FC<SausageDropdownProps> = ({
 
     const scene = new THREE.Scene();
     const aspect = width / height;
-    const frustumSize = 10;
+    const frustumSize = 2;
     const camera = new THREE.OrthographicCamera(
       frustumSize * aspect / -2, 
       frustumSize * aspect / 2, 
@@ -111,12 +113,10 @@ const SausageDropdown: React.FC<SausageDropdownProps> = ({
     directionalLight.position.set(5, 5, 5);
     scene.add(directionalLight);
 
-    const totalHeight = (items.length + 1) * sausageSpacing;
-    camera.position.z = 10;
+    camera.position.z = 2;
     camera.lookAt(scene.position);
 
     const sausageGroup = new THREE.Group();
-    sausageGroup.position.y = totalHeight / 2 - sausageSpacing / 2;
     scene.add(sausageGroup);
 
     createSausageItem("Menu", 0).then((mainSausageItem) => {
@@ -127,6 +127,8 @@ const SausageDropdown: React.FC<SausageDropdownProps> = ({
       const y = -(index + 1) * sausageSpacing;
       createSausageItem(item.label, y).then((sausageItem) => {
         sausageItem.visible = false;
+        sausageItem.position.y = 0;
+        sausageItem.scale.set(0, 0, 0);
         sausageGroup.add(sausageItem);
       });
     });
@@ -143,41 +145,56 @@ const SausageDropdown: React.FC<SausageDropdownProps> = ({
     rendererRef.current = renderer;
     sausageGroupRef.current = sausageGroup;
 
-    const handleMouseMove = (event: MouseEvent) => {
-      if (!sausageGroupRef.current) return;
+    setIsInitialized(true);
 
-      const rect = mountRef.current!.getBoundingClientRect();
-      const mouseX = ((event.clientX - rect.left) / width) * 2 - 1;
+    const handleMouseMove = (event: MouseEvent) => {
+      if (!sausageGroupRef.current || !mountRef.current) return;
+
+      const rect = mountRef.current.getBoundingClientRect();
+      const mouseX = event.clientX - rect.left;
+      const mouseY = event.clientY - rect.top;
+
+      const isOver = mouseX >= 0 && mouseX <= rect.width && mouseY >= 0 && mouseY <= rect.height;
+      setIsMouseOver(isOver);
+
+      const relativeMouseX = (mouseX - rect.width / 2) / (rect.width / 2);
+
+      const maxRotation = 0.523599;
+      let rotation = Math.max(-maxRotation, Math.min(maxRotation, relativeMouseX * maxRotation));
+
+      if (isOver) {
+        rotation *= 0.3;
+      }
 
       sausageGroupRef.current.children.forEach((child) => {
-        child.rotation.y = mouseX * 0.3;
+        child.rotation.y = rotation;
       });
     };
 
-    mountRef.current.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mousemove', handleMouseMove);
 
     return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
       renderer.dispose();
-      mountRef.current?.removeChild(renderer.domElement);
-      mountRef.current?.removeEventListener('mousemove', handleMouseMove);
+      if (mountRef.current) {
+        mountRef.current.removeChild(renderer.domElement);
+      }
     };
   }, [width, height, items, createSausageItem, sausageSpacing]);
 
   const animateDropdown = useCallback((open: boolean) => {
     if (!sausageGroupRef.current) return;
 
-    const totalHeight = (items.length + 1) * sausageSpacing;
-    const targetY = open ? totalHeight / 2 - sausageSpacing / 2 : 0;
-
-    new TWEEN.Tween(sausageGroupRef.current.position)
-      .to({ y: targetY }, 500)
-      .easing(TWEEN.Easing.Back.Out)
-      .start();
-
     sausageGroupRef.current.children.forEach((child, index) => {
       if (index > 0) {
+        const targetY = open ? -index * sausageSpacing : 0;
         const targetScale = open ? 1 : 0;
         const targetVisibility = open;
+
+        new TWEEN.Tween(child.position)
+          .to({ y: targetY }, 500)
+          .easing(TWEEN.Easing.Back.Out)
+          .start();
 
         new TWEEN.Tween(child.scale)
           .to({ x: targetScale, y: targetScale, z: targetScale }, 500)
@@ -192,15 +209,17 @@ const SausageDropdown: React.FC<SausageDropdownProps> = ({
           .start();
       }
     });
-  }, [items, sausageSpacing]);
+  }, [sausageSpacing]);
 
   const handleClick = useCallback(() => {
-    setIsOpen((prev) => {
-      const newIsOpen = !prev;
-      animateDropdown(newIsOpen);
-      return newIsOpen;
-    });
-  }, [animateDropdown]);
+    if (isInitialized) {
+      setIsOpen((prev) => {
+        const newIsOpen = !prev;
+        animateDropdown(newIsOpen);
+        return newIsOpen;
+      });
+    }
+  }, [animateDropdown, isInitialized]);
 
   const handleSelect = useCallback((index: number) => {
     const selectedItem = items[index];
