@@ -1,43 +1,27 @@
 /* App.css */
 .App {
-  position: relative;
+  text-align: center;
+  padding: 20px;
   min-height: 100vh;
-  overflow: hidden;
+  background-color: #282c34;
+  color: white;
 }
 
 .content {
-  position: relative;
-  z-index: 1;
-  padding-top: 120px;
-  max-width: 1600px;
-  margin: 0 auto;
-}
-
-.dropdown-container {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
-  margin-bottom: 80px;
+  justify-content: center;
+  min-height: 100vh;
 }
 
 h1 {
-  color: #FFD700;
-  text-align: center;
-  font-size: 4rem;
-  margin-bottom: 30px;
+  margin-bottom: 40px;
 }
 
-p {
-  color: #FFA500;
-  text-align: center;
-  font-size: 2rem;
-}
-
-.background {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 0;
+.button-container {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  align-items: center;
 }
