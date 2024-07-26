@@ -1,4 +1,4 @@
-// Navbar.tsx
+
 import React, { useRef, useEffect, ReactNode } from 'react';
 import * as THREE from 'three';
 import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry';
@@ -110,3 +110,5 @@ const Navbar: React.FC<NavbarProps> = ({
 };
 
 export default Navbar;
+
+//I need to fix tthis
