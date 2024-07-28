@@ -12,10 +12,13 @@ const App: React.FC = () => {
     setTimeout(() => setIsButtonDisabled(false), 3000); // Re-enable after 3 seconds
   };
 
+  // Add the fontUrl prop to the SausageButton component
+  const fontUrl = 'https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap';
+
   return (
     <div className="App">
       <div className="content">
-        <h1>Sausage Button Test</h1>
+        <h1>Sausages Button Test</h1>
         <div className="button-container">
           <SausageButton 
             width={500} 
